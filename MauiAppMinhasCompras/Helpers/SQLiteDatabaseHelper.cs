@@ -13,6 +13,26 @@ namespace MauiAppMinhasCompras.Helpers
             _conn CreateTableAsync<Produto>().Wait();
         }
 
+        internal async Task Delete(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal async Task<List<Produto>> GetAll()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal async Task<List<Produto>> Search(string q)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal async Task Update(Produto p)
+        {
+            throw new NotImplementedException();
+        }
+
         private void Wait()
         {
             throw new NotImplementedException();
@@ -48,7 +68,7 @@ namespace MauiAppMinhasCompras.Helpers
 
         public Task<List<Produto>> Search(string q) 
         {
-            string sql = "SELECT * Produto WHERE descricao LIKE '%" "%' + q + "%'";
+            string sql = "SELECT * FROM Produto WHERE descricao LIKE '%" "%' + q + "%'";
 
             return _conn.QueryAsync<Produto>(sql);
     );
