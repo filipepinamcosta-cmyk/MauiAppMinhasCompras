@@ -10,14 +10,14 @@ public partial class NovoProduto : ContentPage
 		InitializeComponent();
 	}
 
-    private async Task ToolbarItem_Clicked(object sender, EventArgs e)
+    private async void ToolbarItem_Clicked(object sender, EventArgs e)
     {
         try
         {
             Produto p = new Produto
             {
                 Descricao = txt_descricao.Text,
-                Quantidade = Convert.ToDouble(txt_quantidade.Text)
+                Quantidade = Convert.ToDouble(txt_quantidade.Text),
                 Preco = Convert.ToDouble(txt_preco.Text)
             };
 
