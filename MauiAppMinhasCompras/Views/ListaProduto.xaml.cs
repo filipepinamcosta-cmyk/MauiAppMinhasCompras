@@ -1,6 +1,7 @@
 using MauiAppMinhasCompras.Models;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Runtime.Serialization;
 
 namespace MauiAppMinhasCompras.Views;
 
@@ -16,16 +17,13 @@ public partial class ListaProduto : ContentPage
 
     protected async override void OnAppearing()
     {
-        base.OnAppearing();
-
         try
         {
             lista.Clear();
 
-            var tmp = await App.Db.GetAll();
+            List<Produto> tmp = await App.Db.GetAll();
 
-            foreach (var item in tmp)
-                lista.Add(item);
+            tmp.ForEach(i => lista.Add(i));
         }
         catch (Exception ex)
         {
@@ -51,6 +49,8 @@ public partial class ListaProduto : ContentPage
         {
             string q = e.NewTextValue ?? "";
 
+            lst_produtos.IsRefreshing = true;
+            
             lista.Clear();
 
             var tmp = await App.Db.Search(q);
@@ -61,6 +61,10 @@ public partial class ListaProduto : ContentPage
         catch (Exception ex)
         {
             await DisplayAlert("Ops", ex.Message, "OK");
+        }
+        finally
+        {
+            lst_produtos.IsRefreshing = false;
         }
     }
 
@@ -83,20 +87,21 @@ public partial class ListaProduto : ContentPage
     {
         try
         {
-            if (sender is MenuItem selecionado && selecionado.BindingContext is Produto p)
-            {
-                bool confirm = await DisplayAlert(
-                    "Tem certeza?",
-                    $"Remover {p.Descricao}?",
-                    "Sim",
-                    "Não");
+            if (sender is not MenuItem selecionado)
+                return;
+
+            if (selecionado.BindingContext is not Produto p)
+                return;
+
+            bool confirm = await DisplayAlert(
+                "Tem Certeza?", $"Remover {p.Descricao}?", "Sim", "Não");
 
                 if (confirm)
                 {
                     await App.Db.Delete(p.Id);
                     lista.Remove(p);
                 }
-            }
+            
         }
         catch (Exception ex)
         {
@@ -108,19 +113,37 @@ public partial class ListaProduto : ContentPage
     {
         try
         {
-            if (e.SelectedItem is Produto p)
-            {
-                await Navigation.PushAsync(new Views.EditarProduto
-                {
-                    BindingContext = p
-                });
+            if (e.SelectedItem is not Produto p)
+                return;
 
-                lst_produtos.SelectedItem = null;
-            }
+            await Navigation.PushAsync(new Views.EditarProduto
+            {
+                BindingContext = p,
+            });
         }
         catch (Exception ex)
         {
             await DisplayAlert("Ops", ex.Message, "OK");
+        }
+    }
+
+    private async void lst_produtos_Refreshing(Object sender, EventArgs e)
+    {
+        try
+        {
+            lista.Clear();
+
+            List<Produto> tmp = await App.Db.GetAll();
+
+            tmp.ForEach(i => lista.Add(i));
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Ops", ex.Message, "OK");
+        }
+        finally
+        {
+            lst_produtos.IsRefreshing = false;
         }
     }
 }
