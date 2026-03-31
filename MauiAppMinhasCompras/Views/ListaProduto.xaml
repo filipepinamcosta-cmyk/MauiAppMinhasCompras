@@ -16,15 +16,31 @@
             </Style>
         </ResourceDictionary>
     </ContentPage.Resources>
-    <Grid RowDefinitions="Auto, *">
+    <Grid RowDefinitions="Auto, Auto, *">
+        <SearchBar x:Name="txt_search" 
+               Grid.Row="0"
+               Margin="-15, 0, 0, 0"
+               Placeholder="Busca de Produtos"
+               TextChanged="txt_search_TextChanged"/>
 
-       
-        <SearchBar x:Name="txt_search"
-                   Margin="-15, 0, 0, 0"
-                   Placeholder="Busca de Produtos" 
-                   TextChanged="txt_search_TextChanged"/>
-        
-        <Frame Grid.Row="1" Padding="0" Margin="10" VerticalOptions="Fill">
+        <Frame Grid.Row="1" Padding="5" Margin="10,0,10,10" BackgroundColor="#F0F0F0">
+            <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
+                <Label Text="Filtrar por:" VerticalOptions="Center" FontAttributes="Bold" />
+                <Picker x:Name="pck_filtro_categoria" 
+                    Title="Todas"
+                    WidthRequest="180"
+                    SelectedIndexChanged="pck_filtro_categoria_SelectedIndexChanged">
+                    <Picker.Items>
+                        <x:String>Todas</x:String>
+                        <x:String>Alimentos</x:String>
+                        <x:String>Higiene</x:String>
+                        <x:String>Limpeza</x:String>
+                    </Picker.Items>
+                </Picker>
+            </HorizontalStackLayout>
+        </Frame>
+
+        <Frame Grid.Row="2" Padding="0" Margin="10" VerticalOptions="Fill">
             <ListView x:Name="lst_produtos"
                   IsPullToRefreshEnabled="True"
                   Refreshing="lst_produtos_Refreshing"

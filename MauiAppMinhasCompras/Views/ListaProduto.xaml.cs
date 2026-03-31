@@ -68,6 +68,33 @@ public partial class ListaProduto : ContentPage
         }
     }
 
+    private async void pck_filtro_categoria_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        try
+        {
+            string categoriaSelecionada = pck_filtro_categoria.SelectedItem?.ToString() ?? "Todas";
+
+            var tmp = await App.Db.GetAll();
+
+            lista.Clear();
+
+            IEnumerable<Produto> filtrados;
+            if (categoriaSelecionada == "Todas")
+                filtrados = tmp;
+            else
+                filtrados = tmp.Where(p => p.Categoria == categoriaSelecionada);
+
+            foreach (var item in filtrados)
+            {
+                lista.Add(item);
+            }
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Erro", ex.Message, "OK");
+        }
+    }
+
     private async void ToolbarItem_Clicked_1(object sender, EventArgs e)
     {
         try
